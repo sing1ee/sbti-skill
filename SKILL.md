@@ -55,17 +55,24 @@ user_invocable: true
 
 ### Step 2: 计算结果
 
-使用 Python 脚本计算（必须使用 uvx）：
+使用 Python 脚本计算（优先 uvx，无则回退 python3）：
 
 ```bash
+# 检查 uvx 是否可用
+if command -v uvx &> /dev/null; then
+  PY_CMD="uvx --from python python3"
+else
+  PY_CMD="python3"
+fi
+
 # 获取所有问题
-uvx --from python python3 sbti.py questions
+$PY_CMD sbti.py questions
 
 # 计算结果（通过 stdin 传入答案 JSON）
-echo '{"q1": 3, "q2": 1, ...}' | uvx --from python python3 sbti.py calc
+echo '{"q1": 3, "q2": 1, ...}' | $PY_CMD sbti.py calc
 ```
 
-Python 实现见 `sbti.py`。
+Python 实现见 `sbti.py`（无外部依赖，纯标准库）。
 
 ### Step 3: 保存图片到 Downloads 目录
 
